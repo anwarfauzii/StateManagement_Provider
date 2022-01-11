@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'providers/weigh_provider.dart';
+import '../providers/user_provider.dart';
+import '../providers/weigh_provider.dart';
+import 'login_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,6 +15,7 @@ class HomePage extends StatelessWidget {
     double minValue = 10;
 
     WeighProvider weighProvider = Provider.of<WeighProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contoh AppBar'),
@@ -62,16 +65,20 @@ class HomePage extends StatelessWidget {
                         onPressed: () {
                           if (_ctrlWeight.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Kotak Tidak Boleh Kosong'),),);
+                              const SnackBar(
+                                content: Text('Kotak Tidak Boleh Kosong'),
+                              ),
+                            );
                           } else {
                             int total = weighProvider.weight +
                                 int.parse(_ctrlWeight.text);
                             if (total > 100) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Total Berat Badan Melebihi Batas Maksimal'),),);
+                                const SnackBar(
+                                  content: Text(
+                                      'Total Berat Badan Melebihi Batas Maksimal'),
+                                ),
+                              );
                             } else {
                               weighProvider.changeWeightbyInput(
                                   int.parse(_ctrlWeight.text));
@@ -99,9 +106,10 @@ class HomePage extends StatelessWidget {
                       onPressed: () {
                         if (weighProvider.weight == maxValue) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Nilai Maksimal telah dicapai'),),);
+                            const SnackBar(
+                              content: Text('Nilai Maksimal telah dicapai'),
+                            ),
+                          );
                         } else {
                           print(weighProvider.weight);
                           weighProvider.changeWeightbyButton('add');
@@ -134,7 +142,27 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ],
-            )
+            ),
+            const SizedBox(height: 30),
+            TextButton(
+              onPressed: () {
+                userProvider.removeToken();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.indigo,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  )),
+            ),
           ],
         ),
       ),
